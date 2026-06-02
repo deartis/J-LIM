@@ -1,23 +1,34 @@
-# 🚀 J-LIM v1.0.0 - Lançamento Inicial
+# 🚀 J-LIM v2.0.0 - A Grande Expansão
 
-Temos o prazer de anunciar o lançamento da primeira versão oficial do **J-LIM**! 🎉
+Temos o orgulho de apresentar a versão 2.0 do **J-LIM**! 🎉
 
-O J-LIM nasce com um propósito claro: ser um **otimizador Android honesto**. Ao contrário de muitas ferramentas disponíveis nas lojas de aplicativos que prometem mágica ou exibem animações falsas para mostrar anúncios, o J-LIM faz apenas o que é tecnicamente possível no sistema Android sem acesso root.
+Mantendo nossa promessa de ser um **otimizador Android honesto e sem propagandas**, esta grande atualização transforma o J-LIM de um simples painel de monitoramento para uma ferramenta de diagnóstico completa, adicionando novas telas, um widget nativo e um sistema de alertas inteligentes.
 
-## ✨ O que há de novo (Funcionalidades da v1.0.0)
+## ✨ O que há de novo na v2.0.0
 
-Nesta primeira versão de lançamento, focamos em entregar dados reais e transparentes sobre a saúde e uso do seu dispositivo:
+*   🎨 **Design e UX Premium:** 
+    *   Novo Modo Claro! Agora o J-LIM se adapta à sua preferência com um design elegante claro ou escuro.
+    *   Vibrações sutis (Haptic Feedback) ao navegar para dar vida ao app.
+    *   Onboarding inicial que explica a utilidade de cada tela e nossa filosofia sem anúncios.
+*   📊 **Novas Abas e Funcionalidades:**
+    *   **Aba de Rede:** Acompanhe as velocidades de Download (RX) e Upload (TX) em tempo real num gráfico intuitivo. Inclui informações como Tipo de Conexão, IP Local e os aplicativos que mais consumiram dados no dia!
+    *   **Histórico de Sessão:** Acompanhe a evolução de CPU e RAM por até 2 horas. Inclui um botão para **compartilhar** um "snapshot" (imagem) do seu gráfico com amigos.
+    *   **Informações do Dispositivo:** Tela dedicada de especificações completas (Kernel, Baseband, Patch de segurança Android, Modelo do SoC, Refresh Rate da tela).
+*   🔔 **Sistema de Alertas e Notificações:**
+    *   Fique no controle sem abrir o app! Configure notificações para te avisar se a Memória RAM ficar lotada, se a Bateria aquecer demais ou se o Armazenamento livre ficar crítico.
+    *   Opções customizáveis na nova tela de Configurações (ícone de sino).
+*   📱 **Widget de Tela Inicial (Android):**
+    *   Adicionamos um widget nativo de sistema! Você pode adicioná-lo na tela inicial do seu Android para visualizar rapidamente RAM, Bateria e Temperatura.
+*   ⚙️ **Melhorias Internas e Precisão:**
+    *   A aba de Aplicativos agora soma perfeitamente o tamanho real de um app (APK + Dados de Usuário + Cache).
+    *   A tela inicial (Dashboard) exibe uma barra de % para cada núcleo (core) do seu processador separadamente.
+    *   A bateria exibe um cálculo em tempo real de quanto tempo de carga (ou descarregamento) resta.
 
-*   🧠 **Monitoramento de RAM em tempo real:** Acompanhe o consumo da memória do seu celular usando métricas reais da API oficial do Android (`ActivityManager.MemoryInfo`).
-*   ⚙️ **Análise de Uso de CPU:** Verifique a carga de processamento atualizada a cada 3 segundos com leitura direta de `/proc/stat`.
-*   💾 **Análise de Armazenamento:** Saiba exatamente o espaço livre e em uso no seu dispositivo de forma rápida.
-*   🔋 **Detalhes da Bateria:** Receba detalhes vitais do estado da sua bateria direto da fonte (`BatteryManager`).
+## 🛡️ Nossos Valores Continuam Fortes
 
-## 🛡️ Nossos Valores
-
-*   **Honestidade em Primeiro Lugar:** Sem botões de "Impulsionar" que não fazem nada. O que você vê é o estado real do seu hardware.
-*   **Open Source:** Transparência total. Nosso código está aberto para a comunidade auditar e melhorar.
-*   **Zero Anúncios:** Uma experiência limpa, sem interrupções indesejadas e focada na utilidade.
+*   **Honestidade em Primeiro Lugar:** Sem funções que não servem para nada. Aqui é código nativo acessando as APIs oficiais do Android.
+*   **Open Source:** Transparência total e sem coleta de dados escondida.
+*   **Zero Anúncios:** O seu celular já sofre o suficiente, não precisamos pesar com anúncios.
 
 ---
 
@@ -26,6 +37,6 @@ Nesta primeira versão de lançamento, focamos em entregar dados reais e transpa
 2. Transfira para o seu dispositivo Android (se estiver baixando pelo computador).
 3. Abra o arquivo no seu celular.
 4. Caso seja solicitado, conceda permissão para **"Instalar aplicativos de fontes desconhecidas"**.
-5. Aproveite um monitoramento honesto do seu celular!
+5. Abra o app, leia o novo onboarding e aproveite seu J-LIM turbinado!
 
 **Sinta-se à vontade para abrir Issues no nosso repositório no GitHub em caso de dúvidas, bugs ou sugestões de novas ferramentas!**
