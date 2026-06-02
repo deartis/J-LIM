@@ -28,16 +28,26 @@ class JLimTheme {
   static const Color textMutedLight = Color(0xFF8AADA6);
 
   static ThemeData get theme => _buildTheme(
-    bg: bg, surface: surface, card: card, border: border,
-    textPrimary: textPrimary, textSecondary: textSecondary, textMuted: textMuted,
-    brightness: Brightness.dark,
-  );
+        bg: bg,
+        surface: surface,
+        card: card,
+        border: border,
+        textPrimary: textPrimary,
+        textSecondary: textSecondary,
+        textMuted: textMuted,
+        brightness: Brightness.dark,
+      );
 
   static ThemeData get lightTheme => _buildTheme(
-    bg: bgLight, surface: surfaceLight, card: cardLight, border: borderLight,
-    textPrimary: textPrimaryLight, textSecondary: textSecondaryLight, textMuted: textMutedLight,
-    brightness: Brightness.light,
-  );
+        bg: bgLight,
+        surface: surfaceLight,
+        card: cardLight,
+        border: borderLight,
+        textPrimary: textPrimaryLight,
+        textSecondary: textSecondaryLight,
+        textMuted: textMutedLight,
+        brightness: Brightness.light,
+      );
 
   static ThemeData _buildTheme({
     required Color bg,
@@ -55,9 +65,9 @@ class JLimTheme {
       colorScheme: ColorScheme(
         brightness: brightness,
         primary: green,
-        onPrimary: Color(0xFF0A0C0B),
+        onPrimary: const Color(0xFF0A0C0B),
         secondary: greenDim,
-        onSecondary: Color(0xFF0A0C0B),
+        onSecondary: const Color(0xFF0A0C0B),
         surface: surface,
         onSurface: textPrimary,
         error: red,
@@ -85,9 +95,14 @@ class JLimTheme {
         ),
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return const TextStyle(color: green, fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 0.3);
+            return const TextStyle(
+                color: green,
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.3);
           }
-          return TextStyle(color: textSecondary, fontSize: 10, letterSpacing: 0.3);
+          return TextStyle(
+              color: textSecondary, fontSize: 10, letterSpacing: 0.3);
         }),
         iconTheme: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
@@ -111,7 +126,8 @@ class JLimTheme {
           return textMuted;
         }),
         trackColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) return green.withValues(alpha: 0.3);
+          if (states.contains(WidgetState.selected))
+            return green.withValues(alpha: 0.3);
           return border;
         }),
       ),

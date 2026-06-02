@@ -20,15 +20,21 @@ class _AlertsSettingsScreenState extends State<AlertsSettingsScreen> {
         backgroundColor: JLimTheme.bg,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: JLimTheme.textSecondary),
+          icon: const Icon(Icons.arrow_back_rounded,
+              color: JLimTheme.textSecondary),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text('ALERTAS', style: TextStyle(
-          color: JLimTheme.green, fontSize: 13, fontWeight: FontWeight.w800, letterSpacing: 2,
-        )),
+        title: const Text('ALERTAS',
+            style: TextStyle(
+              color: JLimTheme.green,
+              fontSize: 13,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 2,
+            )),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(height: 1, color: JLimTheme.border.withValues(alpha: 0.5)),
+          child: Container(
+              height: 1, color: JLimTheme.border.withValues(alpha: 0.5)),
         ),
       ),
       body: ListView(
@@ -114,11 +120,11 @@ class _InfoBanner extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: JLimTheme.green.withValues(alpha: 0.3)),
       ),
-      child: Row(
+      child: const Row(
         children: [
-          const Icon(Icons.shield_outlined, color: JLimTheme.green, size: 20),
-          const SizedBox(width: 12),
-          const Expanded(
+          Icon(Icons.shield_outlined, color: JLimTheme.green, size: 20),
+          SizedBox(width: 12),
+          Expanded(
             child: Text(
               'Alertas são verificados a cada 30 segundos. Cada tipo tem cooldown de 10 minutos para não incomodar.',
               style: TextStyle(color: JLimTheme.textSecondary, fontSize: 11),
@@ -168,7 +174,8 @@ class _AlertCard extends StatelessWidget {
             end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: enabled ? color.withValues(alpha: 0.3) : JLimTheme.border),
+          border: Border.all(
+              color: enabled ? color.withValues(alpha: 0.3) : JLimTheme.border),
         ),
         child: Column(
           children: [
@@ -187,16 +194,22 @@ class _AlertCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(title, style: const TextStyle(color: JLimTheme.textPrimary, fontSize: 14, fontWeight: FontWeight.w700)),
+                      Text(title,
+                          style: const TextStyle(
+                              color: JLimTheme.textPrimary,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700)),
                       const SizedBox(height: 2),
-                      Text(subtitle, style: const TextStyle(color: JLimTheme.textMuted, fontSize: 11)),
+                      Text(subtitle,
+                          style: const TextStyle(
+                              color: JLimTheme.textMuted, fontSize: 11)),
                     ],
                   ),
                 ),
                 Switch(
                   value: enabled,
                   onChanged: onToggle,
-                  activeColor: color,
+                  activeThumbColor: color,
                   activeTrackColor: color.withValues(alpha: 0.3),
                   inactiveThumbColor: JLimTheme.textMuted,
                   inactiveTrackColor: JLimTheme.border,
@@ -208,9 +221,12 @@ class _AlertCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(sliderLabel, style: const TextStyle(color: JLimTheme.textMuted, fontSize: 11)),
+                  Text(sliderLabel,
+                      style: const TextStyle(
+                          color: JLimTheme.textMuted, fontSize: 11)),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                       color: color.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
@@ -218,7 +234,10 @@ class _AlertCard extends StatelessWidget {
                     ),
                     child: Text(
                       '${sliderValue.toInt()}$sliderUnit',
-                      style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w800),
+                      style: TextStyle(
+                          color: color,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800),
                     ),
                   ),
                 ],

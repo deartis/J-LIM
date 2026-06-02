@@ -44,8 +44,10 @@ class _ConnectionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final type = provider.networkConnectionType;
     final isWifi = type.toLowerCase().contains('wi-fi');
-    final isMobile = type.toLowerCase().contains('móveis') || type.toLowerCase().contains('dados');
-    final color = type.isEmpty || type == 'Sem conexão' ? JLimTheme.red : JLimTheme.blue;
+    final isMobile = type.toLowerCase().contains('móveis') ||
+        type.toLowerCase().contains('dados');
+    final color =
+        type.isEmpty || type == 'Sem conexão' ? JLimTheme.red : JLimTheme.blue;
     final icon = isWifi
         ? Icons.wifi_rounded
         : isMobile
@@ -91,7 +93,8 @@ class _ConnectionCard extends StatelessWidget {
                   provider.networkIpAddress.isEmpty
                       ? 'IP não detectado'
                       : 'IP: ${provider.networkIpAddress}',
-                  style: const TextStyle(color: JLimTheme.textMuted, fontSize: 12),
+                  style:
+                      const TextStyle(color: JLimTheme.textMuted, fontSize: 12),
                 ),
               ],
             ),
@@ -140,29 +143,40 @@ class _SpeedCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                width: 3, height: 16,
+                width: 3,
+                height: 16,
                 decoration: BoxDecoration(
                   color: JLimTheme.blue,
                   borderRadius: BorderRadius.circular(2),
-                  boxShadow: [BoxShadow(color: JLimTheme.blue.withValues(alpha: 0.5), blurRadius: 6)],
+                  boxShadow: [
+                    BoxShadow(
+                        color: JLimTheme.blue.withValues(alpha: 0.5),
+                        blurRadius: 6)
+                  ],
                 ),
               ),
               const SizedBox(width: 8),
-              const Text('VELOCIDADE', style: TextStyle(
-                color: JLimTheme.blue, fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5,
-              )),
+              const Text('VELOCIDADE',
+                  style: TextStyle(
+                    color: JLimTheme.blue,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.5,
+                  )),
             ],
           ),
           const SizedBox(height: 16),
           Row(
             children: [
-              Expanded(child: _SpeedIndicator(
+              Expanded(
+                  child: _SpeedIndicator(
                 label: '↓ DOWNLOAD',
                 speed: provider.networkRxSpeed,
                 color: JLimTheme.green,
               )),
               const SizedBox(width: 12),
-              Expanded(child: _SpeedIndicator(
+              Expanded(
+                  child: _SpeedIndicator(
                 label: '↑ UPLOAD',
                 speed: provider.networkTxSpeed,
                 color: JLimTheme.blue,
@@ -173,7 +187,7 @@ class _SpeedCard extends StatelessWidget {
           SizedBox(
             height: 80,
             child: LineChart(LineChartData(
-              gridData: FlGridData(show: false),
+              gridData: const FlGridData(show: false),
               titlesData: const FlTitlesData(show: false),
               borderData: FlBorderData(show: false),
               minY: 0,
@@ -191,7 +205,11 @@ class _SpeedCard extends StatelessWidget {
 
   LineChartBarData _buildLine(List<double> data, Color color) {
     return LineChartBarData(
-      spots: data.asMap().entries.map((e) => FlSpot(e.key.toDouble(), e.value)).toList(),
+      spots: data
+          .asMap()
+          .entries
+          .map((e) => FlSpot(e.key.toDouble(), e.value))
+          .toList(),
       isCurved: true,
       curveSmoothness: 0.3,
       color: color,
@@ -213,7 +231,8 @@ class _SpeedIndicator extends StatelessWidget {
   final String label;
   final int speed;
   final Color color;
-  const _SpeedIndicator({required this.label, required this.speed, required this.color});
+  const _SpeedIndicator(
+      {required this.label, required this.speed, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -227,11 +246,14 @@ class _SpeedIndicator extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: const TextStyle(color: JLimTheme.textMuted, fontSize: 9, letterSpacing: 1)),
+          Text(label,
+              style: const TextStyle(
+                  color: JLimTheme.textMuted, fontSize: 9, letterSpacing: 1)),
           const SizedBox(height: 6),
           Text(
             formatSpeed(speed),
-            style: TextStyle(color: color, fontSize: 16, fontWeight: FontWeight.w900),
+            style: TextStyle(
+                color: color, fontSize: 16, fontWeight: FontWeight.w900),
           ),
         ],
       ),
@@ -258,23 +280,33 @@ class _DataTotalsCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(children: [
-            Container(width: 3, height: 16,
-              decoration: BoxDecoration(color: JLimTheme.textSecondary, borderRadius: BorderRadius.circular(2))),
+            Container(
+                width: 3,
+                height: 16,
+                decoration: BoxDecoration(
+                    color: JLimTheme.textSecondary,
+                    borderRadius: BorderRadius.circular(2))),
             const SizedBox(width: 8),
-            const Text('DADOS DESDE O BOOT', style: TextStyle(
-              color: JLimTheme.textSecondary, fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5,
-            )),
+            const Text('DADOS DESDE O BOOT',
+                style: TextStyle(
+                  color: JLimTheme.textSecondary,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.5,
+                )),
           ]),
           const SizedBox(height: 16),
           Row(children: [
-            Expanded(child: _TotalItem(
+            Expanded(
+                child: _TotalItem(
               icon: Icons.download_rounded,
               label: 'Recebido',
               value: formatBytes(provider.networkTotalRx),
               color: JLimTheme.green,
             )),
             const SizedBox(width: 12),
-            Expanded(child: _TotalItem(
+            Expanded(
+                child: _TotalItem(
               icon: Icons.upload_rounded,
               label: 'Enviado',
               value: formatBytes(provider.networkTotalTx),
@@ -292,7 +324,11 @@ class _TotalItem extends StatelessWidget {
   final String label;
   final String value;
   final Color color;
-  const _TotalItem({required this.icon, required this.label, required this.value, required this.color});
+  const _TotalItem(
+      {required this.icon,
+      required this.label,
+      required this.value,
+      required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -303,8 +339,12 @@ class _TotalItem extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(label, style: const TextStyle(color: JLimTheme.textMuted, fontSize: 10)),
-            Text(value, style: TextStyle(color: color, fontSize: 14, fontWeight: FontWeight.w800)),
+            Text(label,
+                style:
+                    const TextStyle(color: JLimTheme.textMuted, fontSize: 10)),
+            Text(value,
+                style: TextStyle(
+                    color: color, fontSize: 14, fontWeight: FontWeight.w800)),
           ],
         ),
       ],
@@ -334,12 +374,20 @@ class _AppUsageCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(children: [
-            Container(width: 3, height: 16,
-              decoration: BoxDecoration(color: JLimTheme.amber, borderRadius: BorderRadius.circular(2))),
+            Container(
+                width: 3,
+                height: 16,
+                decoration: BoxDecoration(
+                    color: JLimTheme.amber,
+                    borderRadius: BorderRadius.circular(2))),
             const SizedBox(width: 8),
-            const Text('USO POR APP (desde o boot)', style: TextStyle(
-              color: JLimTheme.amber, fontSize: 11, fontWeight: FontWeight.w800, letterSpacing: 1.5,
-            )),
+            const Text('USO POR APP (desde o boot)',
+                style: TextStyle(
+                  color: JLimTheme.amber,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.5,
+                )),
           ]),
           const SizedBox(height: 12),
           ...apps.map((app) {
@@ -358,13 +406,17 @@ class _AppUsageCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           app['appName'] as String? ?? '',
-                          style: const TextStyle(color: JLimTheme.textPrimary, fontSize: 12, fontWeight: FontWeight.w600),
+                          style: const TextStyle(
+                              color: JLimTheme.textPrimary,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       Text(
                         formatBytes(total),
-                        style: const TextStyle(color: JLimTheme.textSecondary, fontSize: 11),
+                        style: const TextStyle(
+                            color: JLimTheme.textSecondary, fontSize: 11),
                       ),
                     ],
                   ),
@@ -381,9 +433,13 @@ class _AppUsageCard extends StatelessWidget {
                   const SizedBox(height: 3),
                   Row(
                     children: [
-                      Text('↓ ${formatBytes(rx)}', style: const TextStyle(color: JLimTheme.green, fontSize: 9)),
+                      Text('↓ ${formatBytes(rx)}',
+                          style: const TextStyle(
+                              color: JLimTheme.green, fontSize: 9)),
                       const SizedBox(width: 8),
-                      Text('↑ ${formatBytes(tx)}', style: const TextStyle(color: JLimTheme.blue, fontSize: 9)),
+                      Text('↑ ${formatBytes(tx)}',
+                          style: const TextStyle(
+                              color: JLimTheme.blue, fontSize: 9)),
                     ],
                   ),
                 ],

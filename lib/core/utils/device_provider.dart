@@ -28,7 +28,8 @@ class DeviceProvider extends ChangeNotifier {
   int storageTotal = 0;
   int storageUsed = 0;
   int storageFree = 0;
-  double get storagePercent => storageTotal > 0 ? storageUsed / storageTotal : 0;
+  double get storagePercent =>
+      storageTotal > 0 ? storageUsed / storageTotal : 0;
 
   // ── BATERIA ──────────────────────────────────────────
   int batteryPercent = 0;
@@ -75,7 +76,8 @@ class DeviceProvider extends ChangeNotifier {
     // Ciclo principal: 3 segundos
     _timer = Timer.periodic(const Duration(seconds: 3), (_) => _loadAll());
     // Rede por app e histórico: 10 segundos
-    _slowTimer = Timer.periodic(const Duration(seconds: 10), (_) => _loadSlow());
+    _slowTimer =
+        Timer.periodic(const Duration(seconds: 10), (_) => _loadSlow());
     // Info de dispositivo: carrega 1 vez
     _loadDeviceInfo();
   }
@@ -167,9 +169,15 @@ class DeviceProvider extends ChangeNotifier {
     networkTotalTx = (data['totalTxBytes'] as num?)?.toInt() ?? 0;
     networkConnectionType = data['connectionType'] as String? ?? '';
     networkIpAddress = data['ipAddress'] as String? ?? '';
-    final maxSpeed = 10 * 1024 * 1024; // 10 MB/s para normalizar gráfico
-    networkRxHistory = [...networkRxHistory.skip(1), (networkRxSpeed / maxSpeed * 100).clamp(0.0, 100.0)];
-    networkTxHistory = [...networkTxHistory.skip(1), (networkTxSpeed / maxSpeed * 100).clamp(0.0, 100.0)];
+    const maxSpeed = 10 * 1024 * 1024; // 10 MB/s para normalizar gráfico
+    networkRxHistory = [
+      ...networkRxHistory.skip(1),
+      (networkRxSpeed / maxSpeed * 100).clamp(0.0, 100.0)
+    ];
+    networkTxHistory = [
+      ...networkTxHistory.skip(1),
+      (networkTxSpeed / maxSpeed * 100).clamp(0.0, 100.0)
+    ];
   }
 
   Future<void> _loadDeviceInfo() async {
@@ -203,8 +211,9 @@ String formatBytes(int bytes) {
 }
 
 String formatSpeed(int bytesPerSec) {
-  if (bytesPerSec < 1024) return '${bytesPerSec} B/s';
-  if (bytesPerSec < 1024 * 1024) return '${(bytesPerSec / 1024).toStringAsFixed(1)} KB/s';
+  if (bytesPerSec < 1024) return '$bytesPerSec B/s';
+  if (bytesPerSec < 1024 * 1024)
+    return '${(bytesPerSec / 1024).toStringAsFixed(1)} KB/s';
   return '${(bytesPerSec / (1024 * 1024)).toStringAsFixed(2)} MB/s';
 }
 
