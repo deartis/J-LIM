@@ -302,50 +302,93 @@ class _CpuCard extends StatelessWidget {
       subtitle:
           '${provider.cpuUsage.toStringAsFixed(1)}%  ·  ${provider.cpuCores} núcleos',
       color: color,
-      child: SizedBox(
-        height: 90,
-        child: LineChart(
-          LineChartData(
-            gridData: FlGridData(
-              show: true,
-              drawVerticalLine: false,
-              getDrawingHorizontalLine: (_) => FlLine(
-                color: JLimTheme.border.withValues(alpha: 0.5),
-                strokeWidth: 0.5,
-              ),
-            ),
-            titlesData: const FlTitlesData(show: false),
-            borderData: FlBorderData(show: false),
-            minY: 0,
-            maxY: 100,
-            lineBarsData: [
-              LineChartBarData(
-                spots: provider.cpuHistory
-                    .asMap()
-                    .entries
-                    .map((e) => FlSpot(e.key.toDouble(), e.value))
-                    .toList(),
-                isCurved: true,
-                curveSmoothness: 0.35,
-                color: color,
-                barWidth: 2,
-                dotData: const FlDotData(show: false),
-                belowBarData: BarAreaData(
+      child: Column(
+        children: [
+          SizedBox(
+            height: 80,
+            child: LineChart(
+              LineChartData(
+                gridData: FlGridData(
                   show: true,
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      color.withValues(alpha: 0.18),
-                      color.withValues(alpha: 0.0),
-                    ],
+                  drawVerticalLine: false,
+                  getDrawingHorizontalLine: (_) => FlLine(
+                    color: JLimTheme.border.withValues(alpha: 0.5),
+                    strokeWidth: 0.5,
                   ),
                 ),
+                titlesData: const FlTitlesData(show: false),
+                borderData: FlBorderData(show: false),
+                minY: 0,
+                maxY: 100,
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: provider.cpuHistory
+                        .asMap()
+                        .entries
+                        .map((e) => FlSpot(e.key.toDouble(), e.value))
+                        .toList(),
+                    isCurved: true,
+                    curveSmoothness: 0.35,
+                    color: color,
+                    barWidth: 2,
+                    dotData: const FlDotData(show: false),
+                    belowBarData: BarAreaData(
+                      show: true,
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [color.withValues(alpha: 0.18), color.withValues(alpha: 0.0)],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+          if (provider.cpuPerCore.isNotEmpty) ...
+            [
+              const SizedBox(height: 10),
+              _CoreBars(cores: provider.cpuPerCore),
+            ],
+        ],
       ),
+    );
+  }
+}
+
+class _CoreBars extends StatelessWidget {
+  final List<double> cores;
+  const _CoreBars({required this.cores});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: cores.asMap().entries.map((e) {
+        final pct = e.value / 100;
+        final color = statusColor(pct);
+        return Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2),
+            child: Column(
+              children: [
+                Text('C${e.key}', style: const TextStyle(color: JLimTheme.textMuted, fontSize: 7, letterSpacing: 0.5)),
+                const SizedBox(height: 3),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(3),
+                  child: LinearProgressIndicator(
+                    value: pct.clamp(0.0, 1.0),
+                    backgroundColor: JLimTheme.border,
+                    valueColor: AlwaysStoppedAnimation(color),
+                    minHeight: 20,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text('${e.value.toInt()}%', style: TextStyle(color: color, fontSize: 7, fontWeight: FontWeight.w700)),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 }
@@ -435,44 +478,72 @@ class _BatteryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = statusColor(1 - provider.batteryPercent / 100);
+    final timeStr = formatMinutes(provider.batteryMinutesRemaining);
+    final isCharging = provider.batteryStatus.contains('Carregando');
     return _DCard(
       title: 'BATERIA',
       subtitle: '${provider.batteryStatus}  ·  ${provider.batteryPlugged}',
       color: color,
-      child: Row(
+      child: Column(
         children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 6),
-                _BatteryRow('Saúde', provider.batteryHealth),
-                _BatteryRow(
-                  'Temperatura',
-                  '${provider.batteryTempC.toStringAsFixed(1)} °C',
-                  valueColor: provider.batteryTempC > 40 ? JLimTheme.red : null,
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 6),
+                    _BatteryRow('Saúde', provider.batteryHealth),
+                    _BatteryRow(
+                      'Temperatura',
+                      '${provider.batteryTempC.toStringAsFixed(1)} °C',
+                      valueColor: provider.batteryTempC > 40 ? JLimTheme.red : null,
+                    ),
+                    _BatteryRow('Voltagem', '${provider.batteryVoltageMv} mV'),
+                  ],
                 ),
-                _BatteryRow('Voltagem', '${provider.batteryVoltageMv} mV'),
-              ],
-            ),
-          ),
-          const SizedBox(width: 16),
-          CircularPercentIndicator(
-            radius: 36,
-            lineWidth: 5,
-            percent: (provider.batteryPercent / 100).clamp(0.0, 1.0),
-            backgroundColor: JLimTheme.border,
-            progressColor: color,
-            circularStrokeCap: CircularStrokeCap.round,
-            center: Text(
-              '${provider.batteryPercent}%',
-              style: TextStyle(
-                color: color,
-                fontSize: 14,
-                fontWeight: FontWeight.w900,
               ),
-            ),
+              const SizedBox(width: 16),
+              CircularPercentIndicator(
+                radius: 36,
+                lineWidth: 5,
+                percent: (provider.batteryPercent / 100).clamp(0.0, 1.0),
+                backgroundColor: JLimTheme.border,
+                progressColor: color,
+                circularStrokeCap: CircularStrokeCap.round,
+                center: Text(
+                  '${provider.batteryPercent}%',
+                  style: TextStyle(color: color, fontSize: 14, fontWeight: FontWeight.w900),
+                ),
+              ),
+            ],
           ),
+          if (provider.batteryMinutesRemaining > 0) ...
+            [
+              const SizedBox(height: 10),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: color.withValues(alpha: 0.2)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(isCharging ? Icons.bolt_rounded : Icons.access_time_rounded,
+                        color: color, size: 14),
+                    const SizedBox(width: 6),
+                    Text(
+                      isCharging
+                          ? 'Carregamento completo em $timeStr'
+                          : 'Estimativa de $timeStr restantes',
+                      style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+              ),
+            ],
         ],
       ),
     );

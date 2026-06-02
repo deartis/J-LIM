@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'core/theme/app_theme.dart';
 import 'core/utils/device_provider.dart';
+import 'core/providers/theme_provider.dart';
+import 'features/alerts/alert_service.dart';
+import 'features/alerts/presentation/alerts_settings_screen.dart';
 import 'features/dashboard/presentation/dashboard_screen.dart';
 import 'features/storage/presentation/storage_screen.dart';
 import 'features/apps/presentation/apps_screen.dart';
+import 'features/network/presentation/network_screen.dart';
+import 'features/history/presentation/history_screen.dart';
+import 'features/device_info/presentation/device_info_screen.dart';
+import 'features/onboarding/onboarding_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,24 +25,51 @@ void main() async {
     systemNavigationBarIconBrightness: Brightness.light,
   ));
 
+  // Inicializar o serviço de alertas
+  await AlertService().init();
+
+  // Verificar se o onboarding já foi concluído
+  final prefs = await SharedPreferences.getInstance();
+  final onboardingDone = prefs.getBool('jlim_onboarding_done') ?? false;
+
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => DeviceProvider(),
-      child: const JLimApp(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => DeviceProvider()),
+      ],
+      child: JLimApp(showOnboarding: !onboardingDone),
     ),
   );
 }
 
 class JLimApp extends StatelessWidget {
-  const JLimApp({super.key});
+  final bool showOnboarding;
+  const JLimApp({super.key, required this.showOnboarding});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'J-LIM',
-      theme: JLimTheme.theme,
-      debugShowCheckedModeBanner: false,
-      home: const _HomeShell(),
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, _) {
+        return MaterialApp(
+          title: 'J-LIM',
+          theme: JLimTheme.lightTheme,
+          darkTheme: JLimTheme.theme,
+          themeMode: themeProvider.isDark ? ThemeMode.dark : ThemeMode.light,
+          debugShowCheckedModeBanner: false,
+          home: showOnboarding
+              ? Builder(
+                  builder: (ctx) => OnboardingScreen(
+                    onDone: () {
+                      Navigator.of(ctx).pushReplacement(
+                        MaterialPageRoute(builder: (_) => const _HomeShell()),
+                      );
+                    },
+                  ),
+                )
+              : const _HomeShell(),
+        );
+      },
     );
   }
 }
@@ -53,22 +88,48 @@ class _HomeShellState extends State<_HomeShell> {
     DashboardScreen(),
     StorageScreen(),
     AppsScreen(),
+    NetworkScreen(),
+    HistoryScreen(),
+    DeviceInfoScreen(),
   ];
 
-  final _labels = ['Dashboard', 'Armazenamento', 'Apps'];
+  final _labels = ['Dashboard', 'Storage', 'Apps', 'Rede', 'Histórico', 'Dispositivo'];
   final _icons = [
     Icons.monitor_heart_outlined,
     Icons.storage_outlined,
     Icons.apps_outlined,
+    Icons.network_check_outlined,
+    Icons.show_chart_outlined,
+    Icons.info_outline_rounded,
   ];
   final _activeIcons = [
     Icons.monitor_heart_rounded,
     Icons.storage_rounded,
     Icons.apps_rounded,
+    Icons.network_check_rounded,
+    Icons.show_chart_rounded,
+    Icons.info_rounded,
   ];
 
   @override
+  void initState() {
+    super.initState();
+    // Iniciar monitoramento de alertas após build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final provider = context.read<DeviceProvider>();
+      AlertService().startMonitoring(provider);
+    });
+  }
+
+  void _onTabChange(int index) {
+    HapticFeedback.lightImpact();
+    setState(() => _tab = index);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<ThemeProvider>();
+
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: false,
@@ -106,11 +167,38 @@ class _HomeShellState extends State<_HomeShell> {
           ],
         ),
         actions: [
+          // Toggle tema
+          IconButton(
+            icon: Icon(
+              themeProvider.isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+              size: 20,
+              color: JLimTheme.textSecondary,
+            ),
+            onPressed: () {
+              HapticFeedback.lightImpact();
+              themeProvider.toggle();
+            },
+            tooltip: themeProvider.isDark ? 'Modo claro' : 'Modo escuro',
+          ),
+          // Alertas
+          IconButton(
+            icon: const Icon(Icons.notifications_none_rounded, size: 20, color: JLimTheme.textSecondary),
+            onPressed: () {
+              HapticFeedback.lightImpact();
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const AlertsSettingsScreen()),
+              );
+            },
+            tooltip: 'Configurar alertas',
+          ),
+          // Refresh
           Consumer<DeviceProvider>(
             builder: (ctx, p, _) => IconButton(
-              icon: const Icon(Icons.refresh_rounded,
-                  size: 20, color: JLimTheme.textSecondary),
-              onPressed: p.refresh,
+              icon: const Icon(Icons.refresh_rounded, size: 20, color: JLimTheme.textSecondary),
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                p.refresh();
+              },
               tooltip: 'Atualizar',
             ),
           ),
@@ -126,7 +214,7 @@ class _HomeShellState extends State<_HomeShell> {
         children: _screens,
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        padding: const EdgeInsets.fromLTRB(8, 0, 8, 12),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(28),
@@ -148,12 +236,12 @@ class _HomeShellState extends State<_HomeShell> {
             borderRadius: BorderRadius.circular(28),
             child: NavigationBar(
               backgroundColor: JLimTheme.surface,
-              height: 68,
+              height: 64,
               selectedIndex: _tab,
               animationDuration: const Duration(milliseconds: 300),
-              onDestinationSelected: (i) => setState(() => _tab = i),
+              onDestinationSelected: _onTabChange,
               destinations: List.generate(
-                3,
+                6,
                 (i) => NavigationDestination(
                   icon: Icon(_icons[i]),
                   selectedIcon: Icon(_activeIcons[i]),

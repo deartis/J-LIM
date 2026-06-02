@@ -1,6 +1,6 @@
 name: jlim
 description: Otimizador Android honesto, opensource e sem anúncios.
-version: 1.0.0+1
+version: 2.0.0+2
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -12,8 +12,9 @@ dependencies:
   # State management
   provider: ^6.1.2
 
-  # Local storage (histórico de métricas)
+  # Local storage (histórico de métricas + preferências)
   hive_flutter: ^1.1.0
+  shared_preferences: ^2.2.3
 
   # Gráficos
   fl_chart: ^0.68.0
@@ -22,6 +23,17 @@ dependencies:
   device_info_plus: ^10.1.0
   battery_plus: ^6.0.1
   disk_space_plus: ^0.2.6
+
+  # Notificações locais (alertas)
+  flutter_local_notifications: ^17.2.4
+
+  # Widget na tela inicial do Android
+  home_widget: ^0.7.0
+
+  # Compartilhar snapshot como imagem
+  share_plus: ^10.1.4
+  screenshot: ^3.0.0
+  path_provider: ^2.1.3
 
   # UI utils
   percent_indicator: ^4.2.3

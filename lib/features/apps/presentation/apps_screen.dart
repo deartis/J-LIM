@@ -40,7 +40,11 @@ class _AppsScreenState extends State<AppsScreen> {
     }).toList();
 
     if (_sort == 'tamanho') {
-      list.sort((a, b) => (b['apkSize'] as num).compareTo(a['apkSize'] as num));
+      list.sort((a, b) {
+        final bTotal = (b['totalSize'] as num?)?.toInt() ?? (b['apkSize'] as num?)?.toInt() ?? 0;
+        final aTotal = (a['totalSize'] as num?)?.toInt() ?? (a['apkSize'] as num?)?.toInt() ?? 0;
+        return bTotal.compareTo(aTotal);
+      });
     } else {
       list.sort((a, b) => (a['appName'] as String).compareTo(b['appName'] as String));
     }
@@ -190,7 +194,10 @@ class _AppTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = (app['apkSize'] as num?)?.toInt() ?? 0;
+    final apkSize = (app['apkSize'] as num?)?.toInt() ?? 0;
+    final dataSize = (app['dataSize'] as num?)?.toInt() ?? 0;
+    final cacheSize = (app['cacheSize'] as num?)?.toInt() ?? 0;
+    final totalSize = (app['totalSize'] as num?)?.toInt() ?? apkSize;
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
@@ -204,7 +211,7 @@ class _AppTile extends StatelessWidget {
           width: 38,
           height: 38,
           decoration: BoxDecoration(
-            color: JLimTheme.green.withOpacity(0.1),
+            color: JLimTheme.green.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Center(
@@ -228,9 +235,19 @@ class _AppTile extends StatelessWidget {
             fontWeight: FontWeight.w600,
           ),
         ),
-        subtitle: Text(
-          size > 0 ? formatBytes(size) : app['packageName'] ?? '',
-          style: const TextStyle(color: JLimTheme.textMuted, fontSize: 11),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              totalSize > 0 ? formatBytes(totalSize) : app['packageName'] ?? '',
+              style: const TextStyle(color: JLimTheme.textMuted, fontSize: 11),
+            ),
+            if (dataSize > 0 || cacheSize > 0)
+              Text(
+                'APK: ${formatBytes(apkSize)}  Dados: ${formatBytes(dataSize)}  Cache: ${formatBytes(cacheSize)}',
+                style: const TextStyle(color: JLimTheme.textMuted, fontSize: 9),
+              ),
+          ],
         ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
@@ -243,7 +260,7 @@ class _AppTile extends StatelessWidget {
             ),
             IconButton(
               icon: const Icon(Icons.delete_outline_rounded, size: 18),
-              color: JLimTheme.red.withOpacity(0.7),
+              color: JLimTheme.red.withValues(alpha: 0.7),
               onPressed: onUninstall,
               tooltip: 'Desinstalar',
             ),
@@ -273,7 +290,7 @@ class _SortButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(
           color: active
-              ? JLimTheme.green.withOpacity(0.15)
+              ? JLimTheme.green.withValues(alpha: 0.15)
               : JLimTheme.card,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
