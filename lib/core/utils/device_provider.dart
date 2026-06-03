@@ -78,8 +78,6 @@ class DeviceProvider extends ChangeNotifier {
     // Rede por app e histórico: 10 segundos
     _slowTimer =
         Timer.periodic(const Duration(seconds: 10), (_) => _loadSlow());
-    // Info de dispositivo: carrega 1 vez
-    _loadDeviceInfo();
   }
 
   Future<void> _loadAll() async {
@@ -90,6 +88,7 @@ class DeviceProvider extends ChangeNotifier {
         _loadStorage(),
         _loadBattery(),
         _loadNetwork(),
+        _loadDeviceInfo(),
       ]);
       lastUpdate = DateTime.now();
       error = null;
@@ -183,7 +182,6 @@ class DeviceProvider extends ChangeNotifier {
   Future<void> _loadDeviceInfo() async {
     try {
       deviceInfo = await DeviceChannel.getDeviceInfo();
-      notifyListeners();
     } catch (_) {}
   }
 

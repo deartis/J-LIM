@@ -93,7 +93,14 @@ class _HomeShellState extends State<_HomeShell> {
     DeviceInfoScreen(),
   ];
 
-  final _labels = ['Dashboard', 'Storage', 'Apps', 'Rede', 'Histórico', 'Dispositivo'];
+  final _labels = [
+    'Dashboard',
+    'Storage',
+    'Apps',
+    'Rede',
+    'Histórico',
+    'Dispositivo'
+  ];
   final _icons = [
     Icons.monitor_heart_outlined,
     Icons.storage_outlined,
@@ -170,7 +177,9 @@ class _HomeShellState extends State<_HomeShell> {
           // Toggle tema
           IconButton(
             icon: Icon(
-              themeProvider.isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+              themeProvider.isDark
+                  ? Icons.light_mode_rounded
+                  : Icons.dark_mode_rounded,
               size: 20,
               color: JLimTheme.textSecondary,
             ),
@@ -182,7 +191,8 @@ class _HomeShellState extends State<_HomeShell> {
           ),
           // Alertas
           IconButton(
-            icon: const Icon(Icons.notifications_none_rounded, size: 20, color: JLimTheme.textSecondary),
+            icon: const Icon(Icons.notifications_none_rounded,
+                size: 20, color: JLimTheme.textSecondary),
             onPressed: () {
               HapticFeedback.lightImpact();
               Navigator.of(context).push(
@@ -194,7 +204,8 @@ class _HomeShellState extends State<_HomeShell> {
           // Refresh
           Consumer<DeviceProvider>(
             builder: (ctx, p, _) => IconButton(
-              icon: const Icon(Icons.refresh_rounded, size: 20, color: JLimTheme.textSecondary),
+              icon: const Icon(Icons.refresh_rounded,
+                  size: 20, color: JLimTheme.textSecondary),
               onPressed: () {
                 HapticFeedback.mediumImpact();
                 p.refresh();
@@ -206,7 +217,8 @@ class _HomeShellState extends State<_HomeShell> {
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(height: 1, color: JLimTheme.border.withValues(alpha: 0.5)),
+          child: Container(
+              height: 1, color: JLimTheme.border.withValues(alpha: 0.5)),
         ),
       ),
       body: IndexedStack(

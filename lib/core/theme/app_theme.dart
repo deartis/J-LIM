@@ -126,8 +126,9 @@ class JLimTheme {
           return textMuted;
         }),
         trackColor: WidgetStateProperty.resolveWith((states) {
-          if (states.contains(WidgetState.selected))
+          if (states.contains(WidgetState.selected)) {
             return green.withValues(alpha: 0.3);
+          }
           return border;
         }),
       ),
